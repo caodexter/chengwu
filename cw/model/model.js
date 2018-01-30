@@ -23,8 +23,8 @@ import Echarts from 'native-echarts'
 let Dimensions = require('Dimensions');
 const hwidth = Dimensions.get('window').width;
 let HOT_CXD_URL = `${Mconfig.CWUrl}`;
-let imglst;
-
+let timelst = [];
+let sumlst = [];
 export default class model extends Component {
     constructor(props) {
         super(props)
@@ -33,21 +33,21 @@ export default class model extends Component {
             loaded: false,
             option: {
                 title: {
-                  text: '年度趋势',
+                  text: '趋势',
         
                 },
                 tooltip: {},
                 legend: {
-                  data: ['销量']
+                  data: ['金额']
                 },
                 xAxis: {
-                  data: ["9:00", "12:00", "15:00", "18:00", "21:00", "24:00"]
+                  data: timelst
                 },
                 yAxis: {},
                 series: [{
-                  name: '活跃人数',
+                  name: '金额',
                   type: 'line',
-                  data: [5, 20, 36, 10, 10, 20]
+                  data: sumlst
                 }]
               },
               text: 'text',
@@ -63,7 +63,7 @@ export default class model extends Component {
             return (
                 <View style={styles.container}>
                     <ScrollView style={styles.container}>
-                        <Text>model</Text>
+                        <Text>...</Text>
                         <ActivityIndicator style={styles.actidc} size="large" color="#FF00FF" />
                     </ScrollView>
                     <Tabbar navTo={navigate.bind(this)} initTab='model' />
@@ -95,10 +95,24 @@ export default class model extends Component {
                 return response.json()
             })
             .then((responseData) => {
+                //Alert.alert('JR', responseData.summary_day.length.toString());
+                
+                for (var i = 0; i < responseData.summary_day.length; i++) 
+                {
+                    timelst[i] = responseData.summary_day[i].key.Year.toString() + responseData.summary_day[i].key.Month.toString() + responseData.summary_day[i].key.Day.toString();
+                    sumlst[i] = responseData.summary_day[i].total_rebated;
+
+                    //timelst[i] = responseData.summary_day[i].key.Day.toString();
+                    //sumlst[i] = responseData.summary_day[i].key.Day;
+                    
+                }
+                
+                this.state.option.xAxis.data = timelst;
+                this.state.option.yAxis.data = sumlst;
                 this.setState({
-                    //dataSource: this.state.dataSource.cloneWithRows(responseData.PModels),
                     loaded: true,
                 })
+                //Alert.alert('JR', timelst[0]).toString();
             })
             .done();
     }
