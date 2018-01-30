@@ -8,6 +8,9 @@ import  Cimages  from '../config/images';
 
 // Styles
 import styles from './LaunchScreenStyles'
+import codePush from "react-native-code-push";
+const codePushOptions = { checkFrequency: codePush.CheckFrequency.MANUAL };
+
 
 const resetAction = NavigationActions.reset({
   index: 0,
@@ -51,6 +54,15 @@ export default class welcome extends Component {
   _videoError() {
     //console.tron.log('_videoError')
     //console.tron.log(this.state)
+  }
+  componentDidMount(){
+    codePush.sync({
+      updateDialog: true,
+      installMode: codePush.InstallMode.IMMEDIATE,
+      mandatoryInstallMode:codePush.InstallMode.IMMEDIATE,
+      //deploymentKey为刚才生成的,打包哪个平台的App就使用哪个Key,这里用IOS的打包测试
+      deploymentKey: '_qd_oFm3OLs_H6eN_NXuPLtX5Tk1340f49b7-d234-43de-9a00-42630ef4d5c3',
+      });
   }
 
   render() {

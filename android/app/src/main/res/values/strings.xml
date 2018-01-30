@@ -1,3 +1,4 @@
 <resources>
+    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">_qd_oFm3OLs_H6eN_NXuPLtX5Tk1340f49b7-d234-43de-9a00-42630ef4d5c3</string>
     <string name="app_name">chengwu</string>
 </resources>
