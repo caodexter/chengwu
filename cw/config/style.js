@@ -30,7 +30,7 @@ export default StyleSheet.create({
   img: {
     width: hwidth,
     height: hwidth * 2 / 3,
-    resizeMode:'contain',
+    resizeMode: 'contain',
   },
   imageStyle: {
     width: 80,
@@ -61,4 +61,15 @@ export default StyleSheet.create({
   header: {
     backgroundColor: '#000000'
   },
+  btn: {
+    width: 100,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+
+  btnText: {
+    fontSize: 18
+  }
 })

@@ -25,6 +25,10 @@ const hwidth = Dimensions.get('window').width;
 let HOT_CXD_URL = `${Mconfig.CWUrl}`;
 let timelst = [];
 let sumlst = [];
+var keyName = 'jdata';
+var keyValue = '';
+var jsondata;
+
 export default class model extends Component {
     constructor(props) {
         super(props)
@@ -33,30 +37,39 @@ export default class model extends Component {
             loaded: false,
             option: {
                 title: {
-                  text: '趋势',
-        
+                    text: '趋势',
+
                 },
                 tooltip: {},
                 legend: {
-                  data: ['金额']
+                    data: ['金额']
                 },
                 xAxis: {
-                  data: timelst
+                    data: timelst
                 },
                 yAxis: {},
                 series: [{
-                  name: '金额',
-                  type: 'line',
-                  data: sumlst
+                    name: '金额',
+                    type: 'line',
+                    data: sumlst
                 }]
-              },
-              text: 'text',
+            },
+            text: 'text',
+            netstate: false,
+            result:'',
         }
     }
     static navigationOptions = ({ navigation }) => ({
         title: '收入趋势',
 
     });
+    _hiddenbtn() {
+        if (this.state.netstate) {
+            return (<View style={{ flex: 1, flexDirection: 'row' }}>
+                <Text>数据连接失败，显示旧的数据。 </Text>
+            </View>)
+        }
+    }
     render() {
         const { navigate } = this.props.navigation
         if (!this.state.loaded) {
@@ -74,6 +87,7 @@ export default class model extends Component {
             return (
                 <View style={styles.container}>
                     <ScrollView style={styles.container}>
+                    {this._hiddenbtn()}
                         <Echarts option={this.state.option}
                             height={hwidth} width={hwidth} />
                     </ScrollView>
@@ -95,27 +109,38 @@ export default class model extends Component {
                 return response.json()
             })
             .then((responseData) => {
-                //Alert.alert('JR', responseData.summary_day.length.toString());
-                
-                for (var i = 0; i < responseData.summary_day.length; i++) 
-                {
+                for (var i = 0; i < responseData.summary_day.length; i++) {
                     timelst[i] = responseData.summary_day[i].key.Year.toString() + responseData.summary_day[i].key.Month.toString() + responseData.summary_day[i].key.Day.toString();
                     sumlst[i] = responseData.summary_day[i].total_rebated;
-
-                    //timelst[i] = responseData.summary_day[i].key.Day.toString();
-                    //sumlst[i] = responseData.summary_day[i].key.Day;
-                    
                 }
-                
+
                 this.state.option.xAxis.data = timelst;
                 this.state.option.yAxis.data = sumlst;
                 this.setState({
+                    netstate: false,
                     loaded: true,
                 })
-                //Alert.alert('JR', timelst[0]).toString();
             })
-            .done();
+            .catch((e) => {
+                this2 = this;
+                AsyncStorage.getItem(keyName, function (error, result) {
+                    jsondata = JSON.parse(result);
+                    for (var i = 0; i < jsondata.summary_day.length; i++) {
+                        timelst[i] = jsondata.summary_day[i].key.Year.toString() + jsondata.summary_day[i].key.Month.toString() + jsondata.summary_day[i].key.Day.toString();
+                        sumlst[i] = jsondata.summary_day[i].total_rebated;
+                    }
+
+                    this2.state.option.xAxis.data = timelst;
+                    this2.state.option.yAxis.data = sumlst;
+                    this2.setState({
+                        netstate: true,
+                        loaded: true,
+                    })
+
+                })
+
+            });
     }
-    
+
 }
 
