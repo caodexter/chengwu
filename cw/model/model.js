@@ -250,7 +250,7 @@ export default class model extends Component {
         var jd;
         var kjd;
         jd = JSON.parse(sjd);
-        //Alert.alert('c', jd.summary_year[i].key.Year.toString());
+        
 
         for (var j = 0; j < 6; j++) {
             tyear = TempDate.getFullYear() - 5 + j;
